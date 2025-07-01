@@ -9,7 +9,7 @@ import { getEnvironmentVariable } from "@langchain/core/utils/env";
 import { MongoDBSaver } from "../index.js";
 
 const checkpoint1: Checkpoint = {
-  v: 1,
+  v: 4,
   id: uuid6(-1),
   ts: "2024-04-19T17:19:07.952Z",
   channel_values: {
@@ -26,7 +26,7 @@ const checkpoint1: Checkpoint = {
 };
 
 const checkpoint2: Checkpoint = {
-  v: 1,
+  v: 4,
   id: uuid6(1),
   ts: "2024-04-20T17:19:07.952Z",
   channel_values: {
@@ -43,10 +43,7 @@ const checkpoint2: Checkpoint = {
 };
 
 const client = new MongoClient(getEnvironmentVariable("MONGODB_URL")!, {
-  auth: {
-    username: "user",
-    password: "password",
-  },
+  auth: { username: "user", password: "password" },
 });
 
 afterAll(async () => {

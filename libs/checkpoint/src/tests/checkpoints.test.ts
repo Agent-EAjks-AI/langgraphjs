@@ -10,7 +10,7 @@ import { MemorySaver } from "../memory.js";
 import { uuid6 } from "../id.js";
 
 const checkpoint1: Checkpoint = {
-  v: 1,
+  v: 4,
   id: uuid6(-1),
   ts: "2024-04-19T17:19:07.952Z",
   channel_values: {
@@ -26,7 +26,7 @@ const checkpoint1: Checkpoint = {
   },
 };
 const checkpoint2: Checkpoint = {
-  v: 2,
+  v: 4,
   id: uuid6(1),
   ts: "2024-04-20T17:19:07.952Z",
   channel_values: {
