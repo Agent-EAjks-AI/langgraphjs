@@ -18,7 +18,7 @@ export interface Checkpoint<
   C extends string = string
 > {
   /**
-   * The version of the checkpoint format. Currently 2
+   * The version of the checkpoint format. Currently 4
    */
   v: number;
   /**
