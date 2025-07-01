@@ -1352,7 +1352,7 @@ __metadata:
     vitest: "npm:^3.1.2"
   peerDependencies:
     "@langchain/core": ">=0.2.31 <0.4.0"
-    "@langchain/langgraph-checkpoint": ~0.0.15
+    "@langchain/langgraph-checkpoint": ~0.1.0
   languageName: unknown
   linkType: soft
 
@@ -1384,7 +1384,7 @@ __metadata:
     vitest: "npm:^3.1.2"
   peerDependencies:
     "@langchain/core": ">=0.2.31 <0.4.0"
-    "@langchain/langgraph-checkpoint": ~0.0.15
+    "@langchain/langgraph-checkpoint": ~0.1.0
   languageName: unknown
   linkType: soft
 
@@ -1424,13 +1424,24 @@ __metadata:
     zod: "npm:^3.23.8"
   peerDependencies:
     "@langchain/core": ">=0.2.31 <0.4.0"
-    "@langchain/langgraph-checkpoint": ~0.0.15
+    "@langchain/langgraph-checkpoint": ~0.1.0
   bin:
     validate-checkpointer: ./bin/cli.js
   languageName: unknown
   linkType: soft
 
-"@langchain/langgraph-checkpoint@npm:~0.0.18, @langchain/langgraph-checkpoint@workspace:*, @langchain/langgraph-checkpoint@workspace:libs/checkpoint":
+"@langchain/langgraph-checkpoint@npm:~0.0.18":
+  version: 0.0.18
+  resolution: "@langchain/langgraph-checkpoint@npm:0.0.18"
+  dependencies:
+    uuid: "npm:^10.0.0"
+  peerDependencies:
+    "@langchain/core": ">=0.2.31 <0.4.0"
+  checksum: 10/719d844f0ff427a9613645930a88e05ee8b1140e5ed76f0b7821ad0cfdfa8cce45a868ca47f141b3619f0085ac92660c7a98e3d0ee2383101bdb2218f5ce5a19
+  languageName: node
+  linkType: hard
+
+"@langchain/langgraph-checkpoint@workspace:*, @langchain/langgraph-checkpoint@workspace:libs/checkpoint":
   version: 0.0.0-use.local
   resolution: "@langchain/langgraph-checkpoint@workspace:libs/checkpoint"
   dependencies:
