@@ -4,7 +4,6 @@ import {
   ChannelVersions,
   CheckpointPendingWrite,
   PendingWrite,
-  SendProtocol,
   TASKS,
   uuid6,
   type CheckpointTuple,
@@ -120,12 +119,6 @@ export function parentAndChildCheckpointTuplesWithWrites({
 
   const parentChannelVersions = Object.fromEntries(
     Object.keys(initialChannelValues).map((key) => [key, 1])
-  );
-
-  const pending_sends = writesToParent.flatMap(({ writes }) =>
-    writes
-      .filter(([channel]) => channel === TASKS)
-      .map(([_, value]) => value as SendProtocol)
   );
 
   const parentPendingWrites = writesToParent.flatMap(({ taskId, writes }) =>
