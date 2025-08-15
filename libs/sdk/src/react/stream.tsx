@@ -257,6 +257,10 @@ export function useStream<
   const getMessages = (value: StateType): Message[] =>
     Array.isArray(value[messagesKey]) ? value[messagesKey] : [];
 
+  const setMessages = (current: StateType, messages: Message[]): StateType => {
+    return { ...current, [messagesKey]: messages };
+  };
+
   const [branch, setBranch] = useState<string>("");
   const branchContext = getBranchContext(branch, history.data);
 
@@ -322,7 +326,7 @@ export function useStream<
   })();
 
   const stop = () =>
-    streamManager.stop(historyValues, { ...options, messagesKey });
+    streamManager.stop(historyValues, { onStop: options.onStop });
 
   // --- TRANSPORT ---
   const submit = async (
@@ -350,9 +354,12 @@ export function useStream<
       return { ...historyValues };
     });
 
+    let callbackMeta: RunCallbackMeta | undefined;
+    let rejoinKey: `lg:stream:${string}` | undefined;
+    let usableThreadId = threadId;
+
     await streamManager.start(
       async (signal: AbortSignal) => {
-        let usableThreadId = threadId;
         if (!usableThreadId) {
           const thread = await client.threads.create({
             threadId: submitOptions?.threadId,
@@ -383,12 +390,10 @@ export function useStream<
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
         if (checkpoint != null) delete checkpoint.thread_id;
-        let rejoinKey: `lg:stream:${string}` | undefined;
-        let callbackMeta: RunCallbackMeta | undefined;
         const streamResumable =
           submitOptions?.streamResumable ?? !!runMetadataStorage;
 
-        const stream = client.runs.stream(usableThreadId, assistantId, {
+        return client.runs.stream(usableThreadId, assistantId, {
           input: values as Record<string, unknown>,
           config: submitOptions?.config,
           context: submitOptions?.context,
@@ -409,33 +414,48 @@ export function useStream<
           streamMode,
           streamSubgraphs: submitOptions?.streamSubgraphs,
           streamResumable,
+
           onRunCreated(params) {
             callbackMeta = {
               run_id: params.run_id,
-              thread_id: params.thread_id ?? usableThreadId,
+              thread_id: params.thread_id ?? usableThreadId!,
             };
 
             if (runMetadataStorage) {
-              rejoinKey = `lg:stream:${callbackMeta.thread_id}`;
+              rejoinKey = `lg:stream:${usableThreadId}`;
               runMetadataStorage.setItem(rejoinKey, callbackMeta.run_id);
             }
+
             onCreated?.(callbackMeta);
           },
         }) as AsyncGenerator<
           EventStreamEvent<StateType, UpdateType, CustomType>
         >;
-
-        return {
-          stream,
-          getCallbackMeta: () => callbackMeta,
-          onSuccess: () => {
-            if (rejoinKey) runMetadataStorage?.removeItem(rejoinKey);
-            return history.mutate(usableThreadId);
-          },
-        };
       },
-      historyValues,
-      { ...options, messagesKey }
+      {
+        getMessages,
+        setMessages,
+
+        initialValues: historyValues,
+        callbacks: options,
+        async onSuccess() {
+          if (rejoinKey) runMetadataStorage?.removeItem(rejoinKey);
+          const newHistory = await history.mutate(usableThreadId!);
+
+          const lastHead = newHistory.at(0);
+          if (lastHead) {
+            // We now have the latest update from /history
+            // Thus we can clear the local state
+            options.onFinish?.(lastHead, callbackMeta);
+            return null;
+          }
+
+          return undefined;
+        },
+        onError(error) {
+          options.onError?.(error, callbackMeta);
+        },
+      }
     );
   };
 
@@ -448,27 +468,37 @@ export function useStream<
     lastEventId ??= "-1";
     if (!threadId) return;
 
+    const callbackMeta: RunCallbackMeta = {
+      thread_id: threadId,
+      run_id: runId,
+    };
+
     await streamManager.start(
       async (signal: AbortSignal) => {
-        const stream = client.runs.joinStream(threadId, runId, {
+        return client.runs.joinStream(threadId, runId, {
           signal,
           lastEventId,
           streamMode: joinOptions?.streamMode,
         }) as AsyncGenerator<
           EventStreamEvent<StateType, UpdateType, CustomType>
         >;
-
-        return {
-          onSuccess: () => {
-            runMetadataStorage?.removeItem(`lg:stream:${threadId}`);
-            return history.mutate(threadId);
-          },
-          stream,
-          getCallbackMeta: () => ({ thread_id: threadId, run_id: runId }),
-        };
       },
-      historyValues,
-      { ...options, messagesKey }
+      {
+        getMessages,
+        setMessages,
+
+        initialValues: historyValues,
+        callbacks: options,
+        async onSuccess() {
+          runMetadataStorage?.removeItem(`lg:stream:${threadId}`);
+          const newHistory = await history.mutate(threadId);
+          const lastHead = newHistory.at(0);
+          if (lastHead) options.onFinish?.(lastHead, callbackMeta);
+        },
+        onError(error) {
+          onErrorRef.current?.(error);
+        },
+      }
     );
   };
 
