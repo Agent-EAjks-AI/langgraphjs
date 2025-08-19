@@ -1,5 +1,14 @@
 # @langchain/langgraph
 
+## 0.4.6
+
+### Patch Changes
+
+- c53ca47: Avoid iterating on channels if no managed values are present
+- Updated dependencies [e8b4540]
+- Updated dependencies [9c57526]
+  - @langchain/langgraph-sdk@0.0.109
+
 ## 0.4.5
 
 ### Patch Changes
