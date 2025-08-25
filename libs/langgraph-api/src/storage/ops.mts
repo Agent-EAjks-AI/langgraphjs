@@ -712,7 +712,6 @@ export class Assistants {
       }).length;
     });
   }
-
 }
 
 interface Thread {
@@ -1068,7 +1067,6 @@ export class Threads {
       return STORE.threads[newThreadId];
     });
   }
-
 
   static async count(
     options: {
