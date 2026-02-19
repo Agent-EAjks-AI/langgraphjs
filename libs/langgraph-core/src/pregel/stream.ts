@@ -1,8 +1,8 @@
 import { IterableReadableStream } from "@langchain/core/utils/stream";
 import type { RunnableConfig } from "@langchain/core/runnables";
-import type { StreamMode, StreamOutputMap } from "./types.js";
 import { BaseCallbackHandler } from "@langchain/core/callbacks/base";
 import { Serialized } from "@langchain/core/load/serializable";
+import type { StreamMode, StreamOutputMap } from "./types.js";
 import { TAG_HIDDEN } from "../constants.js";
 
 // [namespace, streamMode, payload]
@@ -32,10 +32,10 @@ type AnyStreamOutput = StreamOutputMap<
 
 type ToolRunInfo = {
   ns: string[];
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
   toolCallId?: string;
   toolName: string;
-  input: any;
+  input: unknown;
 };
 
 /**
@@ -230,7 +230,7 @@ export class StreamToolsHandler extends BaseCallbackHandler {
     ]);
   }
 
-  handleToolEnd(output: any, runId: string) {
+  handleToolEnd(output: unknown, runId: string) {
     const info = this.runs[runId];
     delete this.runs[runId];
     if (!info) return;
@@ -247,7 +247,7 @@ export class StreamToolsHandler extends BaseCallbackHandler {
     ]);
   }
 
-  handleToolError(err: any, runId: string) {
+  handleToolError(err: unknown, runId: string) {
     const info = this.runs[runId];
     delete this.runs[runId];
     if (!info) return;
