@@ -339,6 +339,9 @@ export function useStreamLGP<
           }
           break;
         }
+        default: {
+          throw new Error(`Unexpected tool event: ${data.event}`);
+        }
       }
 
       return next;
