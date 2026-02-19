@@ -12564,8 +12564,20 @@ graph TD;
       graph.stream({ messages: [] }, { streamMode: ["updates", "tools"] })
     );
 
+    type ToolsStreamChunk = [
+      "tools",
+      {
+        event:
+          | "on_tool_start"
+          | "on_tool_partial"
+          | "on_tool_end"
+          | "on_tool_error";
+        toolCallId: string;
+        name: string;
+      }
+    ];
     const toolsChunks = streamChunks.filter(
-      (chunk): chunk is [string, { event: string; name: string }] =>
+      (chunk): chunk is ToolsStreamChunk =>
         Array.isArray(chunk) &&
         chunk.length >= 2 &&
         chunk[0] === "tools" &&
@@ -12653,7 +12665,8 @@ graph TD;
     );
 
     const toolsChunks = streamChunks.filter(
-      (chunk) => Array.isArray(chunk) && chunk[0] === "tools"
+      (chunk) =>
+        Array.isArray(chunk) && (chunk as [string, unknown])[0] === "tools"
     );
     expect(toolsChunks.length).toBe(0);
   });

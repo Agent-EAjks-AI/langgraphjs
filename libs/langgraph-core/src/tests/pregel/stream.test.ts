@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import type { Serialized } from "@langchain/core/load/serializable";
 import { StreamToolsHandler } from "../../pregel/stream.js";
 import { TAG_HIDDEN } from "../../constants.js";
 
@@ -8,7 +9,7 @@ describe("StreamToolsHandler", () => {
     const handler = new StreamToolsHandler((chunk) => chunks.push(chunk));
 
     handler.handleToolStart(
-      {},
+      {} as Serialized,
       '{"query":"SF"}',
       "run-1",
       undefined,
@@ -38,7 +39,7 @@ describe("StreamToolsHandler", () => {
     const handler = new StreamToolsHandler((chunk) => chunks.push(chunk));
 
     handler.handleToolStart(
-      {},
+      {} as Serialized,
       "{}",
       "run-1",
       undefined,
@@ -55,7 +56,7 @@ describe("StreamToolsHandler", () => {
     const handler = new StreamToolsHandler((chunk) => chunks.push(chunk));
 
     handler.handleToolStart(
-      {},
+      {} as Serialized,
       "{}",
       "run-1",
       undefined,
@@ -72,7 +73,7 @@ describe("StreamToolsHandler", () => {
     const handler = new StreamToolsHandler((chunk) => chunks.push(chunk));
 
     handler.handleToolStart(
-      {},
+      {} as Serialized,
       "{}",
       "run-1",
       undefined,
@@ -100,7 +101,7 @@ describe("StreamToolsHandler", () => {
     const handler = new StreamToolsHandler((chunk) => chunks.push(chunk));
 
     handler.handleToolStart(
-      {},
+      {} as Serialized,
       "{}",
       "run-1",
       undefined,
@@ -131,7 +132,7 @@ describe("StreamToolsHandler", () => {
     const err = new Error("tool failed");
 
     handler.handleToolStart(
-      {},
+      {} as Serialized,
       "{}",
       "run-1",
       undefined,
