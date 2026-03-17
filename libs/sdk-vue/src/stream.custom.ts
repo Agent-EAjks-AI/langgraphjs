@@ -20,6 +20,8 @@ import type {
   Message,
   Interrupt,
   ThreadState,
+  isBrowserToolInterrupt,
+  handleBrowserToolInterrupt,
 } from "@langchain/langgraph-sdk";
 
 function createCustomTransportThreadState<
@@ -228,6 +230,46 @@ export function useStreamCustom<
   ) {
     await submitDirect(values, submitOptions);
   }
+
+  // Browser tools handling
+  const handledBrowserTools = new Set<string>();
+
+  watch(
+    () => options.threadId,
+    () => {
+      handledBrowserTools.clear();
+    },
+  );
+
+  watch(streamValues, (vals) => {
+    const { browserTools, onBrowserTool } = options;
+    if (!browserTools?.length) return;
+
+    const interrupts = vals?.__interrupt__;
+    if (!Array.isArray(interrupts) || interrupts.length === 0) return;
+
+    for (const interrupt of interrupts) {
+      if (!isBrowserToolInterrupt(interrupt.value)) continue;
+
+      const interruptId = interrupt.id ?? interrupt.value.toolCall.id ?? "";
+      if (handledBrowserTools.has(interruptId)) continue;
+      handledBrowserTools.add(interruptId);
+
+      void handleBrowserToolInterrupt(
+        interrupt.value,
+        browserTools,
+        onBrowserTool,
+      ).then((result) => {
+        void submit(null, {
+          command: {
+            resume: result.toolCallId
+              ? { [result.toolCallId]: result.value }
+              : result.value,
+          },
+        });
+      });
+    }
+  });
 
   function setBranch(value: string) {
     branch.value = value;

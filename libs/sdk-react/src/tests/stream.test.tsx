@@ -22,6 +22,7 @@ import { QueueOnCreated } from "./components/QueueOnCreated.js";
 import { SubmitOnError } from "./components/SubmitOnError.js";
 import { DeepAgentStream } from "./components/DeepAgentStream.js";
 import { HistoryMessages } from "./components/HistoryMessages.js";
+import { BrowserToolStream } from "./components/BrowserToolStream.js";
 
 const serverUrl = inject("serverUrl");
 
@@ -1145,4 +1146,77 @@ it("stream.history returns BaseMessage instances", async () => {
   await expect
     .element(screen.getByTestId("history-message-types"))
     .toHaveTextContent(/ai/);
+});
+
+// ============================================================================
+// Browser Tools
+// ============================================================================
+
+it("browser tools - executes in browser and resumes agent automatically", async () => {
+  const screen = await render(<BrowserToolStream apiUrl={serverUrl} />);
+
+  await screen.getByTestId("submit").click();
+
+  // useStream handles the browser_tool interrupt automatically — no user
+  // action required. Wait for the full agent cycle to complete.
+  await expect
+    .element(screen.getByTestId("loading"))
+    .toHaveTextContent("idle");
+
+  // Human message is visible.
+  await expect
+    .element(screen.getByTestId("message-0"))
+    .toHaveTextContent("Where am I?");
+
+  // The model's final response after the tool result was fed back.
+  await expect
+    .element(screen.getByTestId("message-last"))
+    .toHaveTextContent("Location received!");
+});
+
+it("browser tools - onBrowserTool callback fires start and success events", async () => {
+  const screen = await render(<BrowserToolStream apiUrl={serverUrl} />);
+
+  await screen.getByTestId("submit").click();
+
+  await expect
+    .element(screen.getByTestId("loading"))
+    .toHaveTextContent("idle");
+
+  // start event fires before the execute function is called
+  await expect
+    .element(screen.getByTestId("tool-event-0"))
+    .toHaveTextContent("start:get_location");
+
+  // success event fires after execution completes, with the tool name
+  await expect
+    .element(screen.getByTestId("tool-event-1"))
+    .toHaveTextContent("success:get_location");
+});
+
+it("browser tools - propagates execute error back to agent as error payload", async () => {
+  const failingExecute = async () => {
+    throw new Error("GPS unavailable");
+  };
+
+  const screen = await render(
+    <BrowserToolStream apiUrl={serverUrl} execute={failingExecute} />,
+  );
+
+  await screen.getByTestId("submit").click();
+
+  await expect
+    .element(screen.getByTestId("loading"))
+    .toHaveTextContent("idle");
+
+  // The error phase is surfaced via onBrowserTool
+  await expect
+    .element(screen.getByTestId("tool-event-1"))
+    .toHaveTextContent("error:get_location:GPS unavailable");
+
+  // The agent still resumes (with { error: "GPS unavailable" } as the tool
+  // result), so the model gets another turn and produces a final message.
+  await expect
+    .element(screen.getByTestId("message-last"))
+    .toHaveTextContent("Location received!");
 });
