@@ -46,6 +46,10 @@ import {
   type HistoryWithBaseMessages,
 } from "@langchain/langgraph-sdk/ui";
 import { getToolCallsWithResults } from "@langchain/langgraph-sdk/utils";
+import {
+  isHeadlessToolInterrupt,
+  handleHeadlessToolInterrupt,
+} from "@langchain/langgraph-sdk";
 
 import {
   Client,
@@ -713,6 +717,52 @@ function useStreamLGP<
     return branchContext.value.branchTree;
   });
 
+  // Headless tools handling
+  const handledToolsLGP = new Set<string>();
+
+  watch(
+    () => options.threadId,
+    () => {
+      handledToolsLGP.clear();
+    },
+  );
+
+  watch(streamValues, (vals) => {
+    const { tools, onTool } = options;
+    if (!tools?.length) return;
+
+    const interrupts = vals?.__interrupt__;
+    if (!Array.isArray(interrupts) || interrupts.length === 0) return;
+
+    for (const interrupt of interrupts) {
+      if (!isHeadlessToolInterrupt(interrupt.value)) continue;
+
+      const interruptId = interrupt.id ?? interrupt.value.toolCall.id ?? "";
+      if (handledToolsLGP.has(interruptId)) continue;
+      handledToolsLGP.add(interruptId);
+
+      void Promise.resolve().then(() =>
+        handleHeadlessToolInterrupt(
+          interrupt.value,
+          tools,
+          onTool,
+        ).then((result) => {
+          void submit(null as unknown as StateType, {
+            // interrupt ensures the resume bypasses the LGP queue and calls
+            // submitDirect directly, even if isLoading is still true when
+            // the browser tool interrupt fires.
+            multitaskStrategy: "interrupt",
+            command: {
+              resume: result.toolCallId
+                ? { [result.toolCallId]: result.value }
+                : result.value,
+            },
+          });
+        }),
+      );
+    }
+  });
+
   return {
     assistantId: options.assistantId,
     client,
@@ -1032,3 +1082,4 @@ export {
   extractParentIdFromNamespace,
   isSubagentNamespace,
 } from "@langchain/langgraph-sdk/ui";
+

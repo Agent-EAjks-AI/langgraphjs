@@ -6,7 +6,7 @@ settings:
 
 overrides:
   '@langchain/core': '>=1.1.27'
-  langchain: 1.2.33-dev-1773712098100
+  langchain: 1.2.33-dev-1773786580575
   '@langchain/langgraph': workspace:*
   '@langchain/langgraph-sdk': workspace:*
   '@langchain/langgraph-checkpoint': workspace:*
@@ -91,8 +91,8 @@ importers:
         specifier: ^16.4.5
         version: 16.6.1
       langchain:
-        specifier: 1.2.33-dev-1773712098100
-        version: 1.2.33-dev-1773712098100(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
+        specifier: 1.2.33-dev-1773786580575
+        version: 1.2.33-dev-1773786580575(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
       tslab:
         specifier: ^1.0.22
         version: 1.0.22
@@ -169,8 +169,8 @@ importers:
         specifier: ^1.1.1
         version: 1.1.1(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       langchain:
-        specifier: 1.2.33-dev-1773712098100
-        version: 1.2.33-dev-1773712098100(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
+        specifier: 1.2.33-dev-1773786580575
+        version: 1.2.33-dev-1773786580575(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
       lucide-react:
         specifier: ^0.577.0
         version: 0.577.0(react@19.2.4)
@@ -263,8 +263,8 @@ importers:
         specifier: ^1.3.2
         version: 1.3.2(react@19.2.4)
       langchain:
-        specifier: 1.2.33-dev-1773712098100
-        version: 1.2.33-dev-1773712098100(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
+        specifier: 1.2.33-dev-1773786580575
+        version: 1.2.33-dev-1773786580575(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
       lucide-react:
         specifier: ^0.577.0
         version: 0.577.0(react@19.2.4)
@@ -333,8 +333,8 @@ importers:
         specifier: ^16.4.5
         version: 16.6.1
       langchain:
-        specifier: 1.2.33-dev-1773712098100
-        version: 1.2.33-dev-1773712098100(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
+        specifier: 1.2.33-dev-1773786580575
+        version: 1.2.33-dev-1773786580575(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
       tslab:
         specifier: ^1.0.22
         version: 1.0.22
@@ -387,8 +387,8 @@ importers:
         specifier: ^16.4.5
         version: 16.6.1
       langchain:
-        specifier: 1.2.33-dev-1773712098100
-        version: 1.2.33-dev-1773712098100(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
+        specifier: 1.2.33-dev-1773786580575
+        version: 1.2.33-dev-1773786580575(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
       pg:
         specifier: ^8.11.0
         version: 8.20.0
@@ -453,8 +453,8 @@ importers:
         specifier: ^16.4.5
         version: 16.6.1
       langchain:
-        specifier: 1.2.33-dev-1773712098100
-        version: 1.2.33-dev-1773712098100(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
+        specifier: 1.2.33-dev-1773786580575
+        version: 1.2.33-dev-1773786580575(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
       pg:
         specifier: ^8.11.0
         version: 8.20.0
@@ -519,8 +519,8 @@ importers:
         specifier: ^16.4.5
         version: 16.6.1
       langchain:
-        specifier: 1.2.33-dev-1773712098100
-        version: 1.2.33-dev-1773712098100(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
+        specifier: 1.2.33-dev-1773786580575
+        version: 1.2.33-dev-1773786580575(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
       pg:
         specifier: ^8.11.0
         version: 8.20.0
@@ -585,8 +585,8 @@ importers:
         specifier: ^16.4.5
         version: 16.6.1
       langchain:
-        specifier: 1.2.33-dev-1773712098100
-        version: 1.2.33-dev-1773712098100(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
+        specifier: 1.2.33-dev-1773786580575
+        version: 1.2.33-dev-1773786580575(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
       pg:
         specifier: ^8.11.0
         version: 8.20.0
@@ -651,8 +651,8 @@ importers:
         specifier: ^16.4.5
         version: 16.6.1
       langchain:
-        specifier: 1.2.33-dev-1773712098100
-        version: 1.2.33-dev-1773712098100(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
+        specifier: 1.2.33-dev-1773786580575
+        version: 1.2.33-dev-1773786580575(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
       pg:
         specifier: ^8.11.0
         version: 8.20.0
@@ -717,8 +717,8 @@ importers:
         specifier: ^16.4.5
         version: 16.6.1
       langchain:
-        specifier: 1.2.33-dev-1773712098100
-        version: 1.2.33-dev-1773712098100(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
+        specifier: 1.2.33-dev-1773786580575
+        version: 1.2.33-dev-1773786580575(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
       pg:
         specifier: ^8.11.0
         version: 8.20.0
@@ -783,8 +783,8 @@ importers:
         specifier: ^16.4.5
         version: 16.6.1
       langchain:
-        specifier: 1.2.33-dev-1773712098100
-        version: 1.2.33-dev-1773712098100(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
+        specifier: 1.2.33-dev-1773786580575
+        version: 1.2.33-dev-1773786580575(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
       pg:
         specifier: ^8.11.0
         version: 8.20.0
@@ -849,8 +849,8 @@ importers:
         specifier: ^16.4.5
         version: 16.6.1
       langchain:
-        specifier: 1.2.33-dev-1773712098100
-        version: 1.2.33-dev-1773712098100(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
+        specifier: 1.2.33-dev-1773786580575
+        version: 1.2.33-dev-1773786580575(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
       pg:
         specifier: ^8.11.0
         version: 8.20.0
@@ -915,8 +915,8 @@ importers:
         specifier: ^16.4.5
         version: 16.6.1
       langchain:
-        specifier: 1.2.33-dev-1773712098100
-        version: 1.2.33-dev-1773712098100(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
+        specifier: 1.2.33-dev-1773786580575
+        version: 1.2.33-dev-1773786580575(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
       pg:
         specifier: ^8.11.0
         version: 8.20.0
@@ -957,8 +957,8 @@ importers:
         specifier: ^16.4.5
         version: 16.6.1
       langchain:
-        specifier: 1.2.33-dev-1773712098100
-        version: 1.2.33-dev-1773712098100(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
+        specifier: 1.2.33-dev-1773786580575
+        version: 1.2.33-dev-1773786580575(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
@@ -1048,14 +1048,14 @@ importers:
         specifier: workspace:*
         version: link:../../libs/sdk
       '@langchain/openai':
-        specifier: 1.3.0-dev-1773698445534
-        version: 1.3.0-dev-1773698445534(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(ws@8.19.0)
+        specifier: 1.3.0-dev-1773786580575
+        version: 1.3.0-dev-1773786580575(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(ws@8.19.0)
       deepagents:
         specifier: ^1.8.1
         version: 1.8.4(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
       langchain:
-        specifier: 1.2.33-dev-1773712098100
-        version: 1.2.33-dev-1773712098100(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
+        specifier: 1.2.33-dev-1773786580575
+        version: 1.2.33-dev-1773786580575(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
       lucide-react:
         specifier: ^0.577.0
         version: 0.577.0(react@19.2.4)
@@ -2162,8 +2162,8 @@ importers:
         specifier: ^4.2.1
         version: 4.2.5(eslint-config-prettier@8.10.2(eslint@8.57.1))(eslint@8.57.1)(prettier@2.8.8)
       langchain:
-        specifier: 1.2.33-dev-1773712098100
-        version: 1.2.33-dev-1773712098100(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
+        specifier: 1.2.33-dev-1773786580575
+        version: 1.2.33-dev-1773786580575(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
       pg:
         specifier: ^8.13.0
         version: 8.20.0
@@ -2506,8 +2506,8 @@ importers:
         specifier: ^4.2.1
         version: 4.2.5(eslint-config-prettier@8.10.2(eslint@8.57.1))(eslint@8.57.1)(prettier@2.8.8)
       langchain:
-        specifier: 1.2.33-dev-1773712098100
-        version: 1.2.33-dev-1773712098100(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
+        specifier: 1.2.33-dev-1773786580575
+        version: 1.2.33-dev-1773786580575(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
       prettier:
         specifier: ^2.8.3
         version: 2.8.8
@@ -2621,8 +2621,8 @@ importers:
         specifier: ^4.12.7
         version: 4.12.8
       langchain:
-        specifier: 1.2.33-dev-1773712098100
-        version: 1.2.33-dev-1773712098100(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
+        specifier: 1.2.33-dev-1773786580575
+        version: 1.2.33-dev-1773786580575(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
       prettier:
         specifier: ^3.8.1
         version: 3.8.1
@@ -2733,8 +2733,8 @@ importers:
         specifier: ^4.12.7
         version: 4.12.8
       langchain:
-        specifier: 1.2.33-dev-1773712098100
-        version: 1.2.33-dev-1773712098100(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
+        specifier: 1.2.33-dev-1773786580575
+        version: 1.2.33-dev-1773786580575(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
       prettier:
         specifier: ^3.8.1
         version: 3.8.1
@@ -2830,8 +2830,8 @@ importers:
         specifier: ^4.12.7
         version: 4.12.8
       langchain:
-        specifier: 1.2.33-dev-1773712098100
-        version: 1.2.33-dev-1773712098100(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
+        specifier: 1.2.33-dev-1773786580575
+        version: 1.2.33-dev-1773786580575(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
       prettier:
         specifier: ^3.8.1
         version: 3.8.1
@@ -2927,8 +2927,8 @@ importers:
         specifier: ^4.12.7
         version: 4.12.8
       langchain:
-        specifier: 1.2.33-dev-1773712098100
-        version: 1.2.33-dev-1773712098100(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
+        specifier: 1.2.33-dev-1773786580575
+        version: 1.2.33-dev-1773786580575(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
       prettier:
         specifier: ^3.8.1
         version: 3.8.1
@@ -4292,8 +4292,8 @@ packages:
     peerDependencies:
       '@langchain/core': '>=1.1.27'
 
-  '@langchain/openai@1.3.0-dev-1773698445534':
-    resolution: {integrity: sha512-hEdulo8B3VTpvf/4BZTTMFb30MkGKAAyMlJSTxGbMreV3LWwyNeaK12VTyilE8WKykfGH/LcrcIJaeIrZj6jcg==}
+  '@langchain/openai@1.3.0-dev-1773786580575':
+    resolution: {integrity: sha512-3W4D86JHk86sBVfoB1JrT86jln7mhvF6ju/zyiGY0RHWY/6xeuYfxZUv9huYTfs9KCfNQiMlBiS/fT+mb8usVA==}
     engines: {node: '>=20'}
     peerDependencies:
       '@langchain/core': '>=1.1.27'
@@ -9479,8 +9479,8 @@ packages:
   kuler@2.0.0:
     resolution: {integrity: sha512-Xq9nH7KlWZmXAtodXDDRE7vs6DU1gTU8zYDHDiWLSip45Egwq3plLHzPn27NgvzL2r1LMPC1vdqh98sQxtqj4A==}
 
-  langchain@1.2.33-dev-1773712098100:
-    resolution: {integrity: sha512-a9F3mJSNpSK94fZHLeozM+VZ3kzcgHpVPpZXVBQhJkucPbSL4VzTX0yxR3sjJqWEm0x/1yR+lhMR4xg3vfrcSg==}
+  langchain@1.2.33-dev-1773786580575:
+    resolution: {integrity: sha512-CwdFpqXV5EN9NhOx1Nl8/9T2NqFcz4v06SUawbjpez2gPruVIQ32C2Dw3yJ16flgPN0JAH2ARW5YWuK0pLXexg==}
     engines: {node: '>=20'}
     peerDependencies:
       '@langchain/core': '>=1.1.27'
@@ -13784,7 +13784,7 @@ snapshots:
     transitivePeerDependencies:
       - ws
 
-  '@langchain/openai@1.3.0-dev-1773698445534(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(ws@8.19.0)':
+  '@langchain/openai@1.3.0-dev-1773786580575(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(ws@8.19.0)':
     dependencies:
       '@langchain/core': 1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
       js-tiktoken: 1.0.21
@@ -17889,7 +17889,7 @@ snapshots:
       '@langchain/core': 1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
       '@langchain/langgraph': link:libs/langgraph-core
       fast-glob: 3.3.3
-      langchain: 1.2.33-dev-1773712098100(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
+      langchain: 1.2.33-dev-1773786580575(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
       micromatch: 4.0.8
       uuid: 13.0.0
       yaml: 2.8.2
@@ -19515,7 +19515,7 @@ snapshots:
 
   kuler@2.0.0: {}
 
-  langchain@1.2.33-dev-1773712098100(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0):
+  langchain@1.2.33-dev-1773786580575(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0):
     dependencies:
       '@langchain/core': 1.1.34(@opentelemetry/api@1.9.0)(openai@4.104.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
       '@langchain/langgraph': link:libs/langgraph-core
@@ -19530,7 +19530,7 @@ snapshots:
       - openai
       - ws
 
-  langchain@1.2.33-dev-1773712098100(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0):
+  langchain@1.2.33-dev-1773786580575(@langchain/core@1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0))(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0):
     dependencies:
       '@langchain/core': 1.1.34(@opentelemetry/api@1.9.0)(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(ws@8.19.0)
       '@langchain/langgraph': link:libs/langgraph-core

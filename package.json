@@ -42,7 +42,7 @@
   "pnpm": {
     "overrides": {
       "@langchain/core": ">=1.1.27",
-      "langchain": "1.2.33-dev-1773712098100",
+      "langchain": "1.2.33-dev-1773786580575",
       "@langchain/langgraph": "workspace:*",
       "@langchain/langgraph-sdk": "workspace:*",
       "@langchain/langgraph-checkpoint": "workspace:*",
