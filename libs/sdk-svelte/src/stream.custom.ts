@@ -233,19 +233,17 @@ export function useStreamCustom<
       // settles before we kick off a new stream.start() via submit().
       // Svelte's subscribe fires synchronously unlike React's useEffect.
       void Promise.resolve().then(() =>
-        handleHeadlessToolInterrupt(
-          interrupt.value,
-          tools,
-          onTool,
-        ).then((result) => {
-          void submit(null, {
-            command: {
-              resume: result.toolCallId
-                ? { [result.toolCallId]: result.value }
-                : result.value,
-            },
-          });
-        }),
+        handleHeadlessToolInterrupt(interrupt.value, tools, onTool).then(
+          (result) => {
+            void submit(null, {
+              command: {
+                resume: result.toolCallId
+                  ? { [result.toolCallId]: result.value }
+                  : result.value,
+              },
+            });
+          },
+        ),
       );
     }
   });

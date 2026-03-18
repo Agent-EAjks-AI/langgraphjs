@@ -878,23 +878,21 @@ export function useStreamLGP<
       handledToolsLGP.add(interruptId);
 
       void Promise.resolve().then(() =>
-        handleHeadlessToolInterrupt(
-          interrupt.value,
-          tools,
-          onTool,
-        ).then((result) => {
-          void submit(null as unknown as StateType, {
-            // interrupt ensures the resume bypasses the LGP queue and calls
-            // submitDirect directly, even if isLoading is still true when
-            // the browser tool interrupt fires.
-            multitaskStrategy: "interrupt",
-            command: {
-              resume: result.toolCallId
-                ? { [result.toolCallId]: result.value }
-                : result.value,
-            },
-          });
-        }),
+        handleHeadlessToolInterrupt(interrupt.value, tools, onTool).then(
+          (result) => {
+            void submit(null as unknown as StateType, {
+              // interrupt ensures the resume bypasses the LGP queue and calls
+              // submitDirect directly, even if isLoading is still true when
+              // the browser tool interrupt fires.
+              multitaskStrategy: "interrupt",
+              command: {
+                resume: result.toolCallId
+                  ? { [result.toolCallId]: result.value }
+                  : result.value,
+              },
+            });
+          },
+        ),
       );
     }
   });
@@ -1048,4 +1046,3 @@ export {
   extractParentIdFromNamespace,
   isSubagentNamespace,
 } from "@langchain/langgraph-sdk/ui";
-

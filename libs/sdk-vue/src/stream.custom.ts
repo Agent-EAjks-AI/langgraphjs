@@ -256,19 +256,17 @@ export function useStreamCustom<
       handledBrowserTools.add(interruptId);
 
       void Promise.resolve().then(() =>
-        handleHeadlessToolInterrupt(
-          interrupt.value,
-          tools,
-          onTool,
-        ).then((result) => {
-          void submit(null, {
-            command: {
-              resume: result.toolCallId
-                ? { [result.toolCallId]: result.value }
-                : result.value,
-            },
-          });
-        }),
+        handleHeadlessToolInterrupt(interrupt.value, tools, onTool).then(
+          (result) => {
+            void submit(null, {
+              command: {
+                resume: result.toolCallId
+                  ? { [result.toolCallId]: result.value }
+                  : result.value,
+              },
+            });
+          },
+        ),
       );
     }
   });
