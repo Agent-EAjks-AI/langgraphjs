@@ -6,7 +6,7 @@ import {
   ToolMessage,
 } from "@langchain/core/messages";
 import { useStream, type ClassSubagentStreamInterface } from "../../index.js";
-import type { DeepAgentGraph } from "../fixtures/mock-server.js";
+import type { DeepAgentGraph } from "../fixtures/browser-fixtures.js";
 
 const serverUrl = inject("serverUrl");
 
