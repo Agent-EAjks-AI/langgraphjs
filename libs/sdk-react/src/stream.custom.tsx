@@ -13,6 +13,7 @@ import {
   StreamManager,
   MessageTupleManager,
   extractInterrupts,
+  userFacingInterruptsFromValuesArray,
   FetchStreamTransport,
   toMessageClass,
   ensureMessageInstances,
@@ -27,15 +28,14 @@ import {
   type MessageMetadata,
 } from "@langchain/langgraph-sdk/ui";
 import { getToolCallsWithResults } from "@langchain/langgraph-sdk/utils";
-import type { BaseMessage } from "@langchain/core/messages";
 import type {
   BagTemplate,
   Message,
   Interrupt,
   ThreadState,
-  isHeadlessToolInterrupt,
-  handleHeadlessToolInterrupt,
 } from "@langchain/langgraph-sdk";
+import { flushPendingHeadlessToolInterrupts } from "@langchain/langgraph-sdk";
+import type { BaseMessage } from "@langchain/core/messages";
 import { useControllableThreadId } from "./thread.js";
 import type { UseStreamCustom } from "./types.js";
 
@@ -248,34 +248,18 @@ export function useStreamCustom<
   }, [threadId]);
 
   useEffect(() => {
-    const tools = toolsRef.current;
-    if (!tools?.length) return;
-    if (!stream.values) return;
-
-    const interrupts = stream.values.__interrupt__;
-    if (!Array.isArray(interrupts) || interrupts.length === 0) return;
-
-    for (const interrupt of interrupts) {
-      if (!isHeadlessToolInterrupt(interrupt.value)) continue;
-
-      const interruptId = interrupt.id ?? interrupt.value.toolCall.id ?? "";
-      if (handledBrowserToolsRef.current.has(interruptId)) continue;
-      handledBrowserToolsRef.current.add(interruptId);
-
-      void handleHeadlessToolInterrupt(
-        interrupt.value,
-        tools,
-        onToolRef.current,
-      ).then((result) => {
-        void submit(null, {
-          command: {
-            resume: result.toolCallId
-              ? { [result.toolCallId]: result.value }
-              : result.value,
-          },
-        });
-      });
-    }
+    flushPendingHeadlessToolInterrupts(
+      stream.values,
+      toolsRef.current,
+      handledBrowserToolsRef.current,
+      {
+        onTool: onToolRef.current,
+        resumeSubmit: (command) =>
+          void submit(null, {
+            command,
+          }),
+      },
+    );
   }, [stream.values, submit]);
 
   return {
@@ -316,9 +300,9 @@ export function useStreamCustom<
         "__interrupt__" in stream.values &&
         Array.isArray(stream.values.__interrupt__)
       ) {
-        const valueInterrupts = stream.values.__interrupt__;
-        if (valueInterrupts.length === 0) return [{ when: "breakpoint" }];
-        return valueInterrupts;
+        return userFacingInterruptsFromValuesArray<InterruptType>(
+          stream.values.__interrupt__ as Interrupt<InterruptType>[],
+        );
       }
 
       return [];

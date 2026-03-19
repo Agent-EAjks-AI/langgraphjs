@@ -25,16 +25,14 @@ import type { UseStreamCustom } from "./types.js";
 import { type Message } from "../types.messages.js";
 import { getToolCallsWithResults } from "../utils/tools.js";
 import { MessageTupleManager } from "../ui/messages.js";
+import { userFacingInterruptsFromValuesArray } from "../ui/interrupts.js";
 import { Interrupt, type ThreadState } from "../schema.js";
 import { BytesLineDecoder, SSEDecoder } from "../utils/sse.js";
 import { IterableReadableStream } from "../utils/stream.js";
 import { useControllableThreadId } from "./thread.js";
 import { Command } from "../types.js";
 import type { BagTemplate } from "../types.template.js";
-import {
-  isHeadlessToolInterrupt,
-  handleHeadlessToolInterrupt,
-} from "../browser-tools.js";
+import { flushPendingHeadlessToolInterrupts } from "../browser-tools.js";
 
 interface FetchStreamTransportOptions {
   /**
@@ -313,40 +311,18 @@ export function useStreamCustom<
 
   // Handle headless tool interrupts
   useEffect(() => {
-    const tools = toolsRef.current;
-    if (!tools?.length) return;
-    if (!stream.values) return;
-
-    // Check for browser tool interrupt in values
-    const interrupts = stream.values.__interrupt__;
-    if (!Array.isArray(interrupts) || interrupts.length === 0) return;
-
-    // Find browser tool interrupts that haven't been handled
-    for (const interrupt of interrupts) {
-      if (!isHeadlessToolInterrupt(interrupt.value)) continue;
-
-      const interruptId = interrupt.id ?? interrupt.value.toolCall.id ?? "";
-      if (handledToolsRef.current.has(interruptId)) continue;
-
-      // Mark as handled before async operation
-      handledToolsRef.current.add(interruptId);
-
-      // Handle the browser tool interrupt
-      void handleHeadlessToolInterrupt(
-        interrupt.value,
-        tools,
-        onToolRef.current
-      ).then((result) => {
-        // Resume with the tool result
-        void submit(null, {
-          command: {
-            resume: result.toolCallId
-              ? { [result.toolCallId]: result.value }
-              : result.value,
-          },
-        });
-      });
-    }
+    flushPendingHeadlessToolInterrupts(
+      stream.values,
+      toolsRef.current,
+      handledToolsRef.current,
+      {
+        onTool: onToolRef.current,
+        resumeSubmit: (command) =>
+          void submit(null, {
+            command,
+          }),
+      }
+    );
   }, [stream.values, submit]);
 
   return {
@@ -366,9 +342,9 @@ export function useStreamCustom<
         "__interrupt__" in stream.values &&
         Array.isArray(stream.values.__interrupt__)
       ) {
-        const valueInterrupts = stream.values.__interrupt__;
-        if (valueInterrupts.length === 0) return [{ when: "breakpoint" }];
-        return valueInterrupts;
+        return userFacingInterruptsFromValuesArray<InterruptType>(
+          stream.values.__interrupt__ as Interrupt<InterruptType>[]
+        );
       }
 
       return [];

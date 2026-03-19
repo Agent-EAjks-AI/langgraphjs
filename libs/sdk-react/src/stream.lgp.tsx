@@ -32,6 +32,8 @@ import {
   StreamManager,
   MessageTupleManager,
   extractInterrupts,
+  userFacingInterruptsFromThreadTasks,
+  userFacingInterruptsFromValuesArray,
   toMessageClass,
   ensureMessageInstances,
   ensureHistoryMessageInstances,
@@ -49,10 +51,7 @@ import {
   type UseStreamThread,
 } from "@langchain/langgraph-sdk/ui";
 import { getToolCallsWithResults } from "@langchain/langgraph-sdk/utils";
-import {
-  isHeadlessToolInterrupt,
-  handleHeadlessToolInterrupt,
-} from "@langchain/langgraph-sdk";
+import { flushPendingHeadlessToolInterrupts } from "@langchain/langgraph-sdk";
 import { useControllableThreadId } from "./thread.js";
 import type { UseStream, SubmitOptions } from "./types.js";
 
@@ -857,33 +856,18 @@ export function useStreamLGP<
   }, [threadId]);
 
   useEffect(() => {
-    const tools = toolsRef.current;
-    if (!tools?.length) return;
-
-    const interrupts = values?.__interrupt__;
-    if (!Array.isArray(interrupts) || interrupts.length === 0) return;
-
-    for (const interrupt of interrupts) {
-      if (!isHeadlessToolInterrupt(interrupt.value)) continue;
-
-      const interruptId = interrupt.id ?? interrupt.value.toolCall.id ?? "";
-      if (handledBrowserToolsRef.current.has(interruptId)) continue;
-      handledBrowserToolsRef.current.add(interruptId);
-
-      void handleHeadlessToolInterrupt(
-        interrupt.value,
-        tools,
-        onToolRef.current,
-      ).then((result) => {
-        void submit(null, {
-          command: {
-            resume: result.toolCallId
-              ? { [result.toolCallId]: result.value }
-              : result.value,
-          },
-        });
-      });
-    }
+    flushPendingHeadlessToolInterrupts(
+      values,
+      toolsRef.current,
+      handledBrowserToolsRef.current,
+      {
+        onTool: onToolRef.current,
+        resumeSubmit: (command) =>
+          void submit(null, {
+            command,
+          }),
+      },
+    );
   }, [values, submit]);
 
   return {
@@ -938,9 +922,9 @@ export function useStreamLGP<
         "__interrupt__" in values &&
         Array.isArray(values.__interrupt__)
       ) {
-        const valueInterrupts = values.__interrupt__;
-        if (valueInterrupts.length === 0) return [{ when: "breakpoint" }];
-        return valueInterrupts;
+        return userFacingInterruptsFromValuesArray<InterruptType>(
+          values.__interrupt__ as Interrupt<InterruptType>[],
+        );
       }
 
       // If we're deferring to old interrupt detection logic, don't show the interrupt if the stream is loading
@@ -950,8 +934,11 @@ export function useStreamLGP<
       const allTasks = branchContext.threadHead?.tasks ?? [];
       const allInterrupts = allTasks.flatMap((t) => t.interrupts ?? []);
 
-      if (allInterrupts.length > 0) {
-        return allInterrupts as Interrupt<InterruptType>[];
+      const fromTasks = userFacingInterruptsFromThreadTasks<InterruptType>(
+        allInterrupts as Interrupt<InterruptType>[],
+      );
+      if (fromTasks !== null) {
+        return fromTasks;
       }
 
       // check if there's a next task present (breakpoint-style interrupt)

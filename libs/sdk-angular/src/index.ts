@@ -14,6 +14,8 @@ import {
   getMessagesMetadataMap,
   StreamError,
   extractInterrupts,
+  userFacingInterruptsFromThreadTasks,
+  userFacingInterruptsFromValuesArray,
   toMessageClass,
   ensureMessageInstances,
   ensureHistoryMessageInstances,
@@ -49,10 +51,7 @@ import {
   type DefaultToolCall,
 } from "@langchain/langgraph-sdk";
 import { getToolCallsWithResults } from "@langchain/langgraph-sdk/utils";
-import {
-  isHeadlessToolInterrupt,
-  handleHeadlessToolInterrupt,
-} from "@langchain/langgraph-sdk";
+import { flushPendingHeadlessToolInterrupts } from "@langchain/langgraph-sdk";
 import { useStreamCustom } from "./stream.custom.js";
 
 export { FetchStreamTransport } from "@langchain/langgraph-sdk/ui";
@@ -788,9 +787,9 @@ export function useStreamLGP<
       "__interrupt__" in vals &&
       Array.isArray(vals.__interrupt__)
     ) {
-      const valueInterrupts = vals.__interrupt__;
-      if (valueInterrupts.length === 0) return [{ when: "breakpoint" }];
-      return valueInterrupts;
+      return userFacingInterruptsFromValuesArray<InterruptType>(
+        vals.__interrupt__ as Interrupt<InterruptType>[],
+      );
     }
 
     if (isLoading()) return [];
@@ -798,8 +797,11 @@ export function useStreamLGP<
     const allTasks = branchContext().threadHead?.tasks ?? [];
     const allInterrupts = allTasks.flatMap((t) => t.interrupts ?? []);
 
-    if (allInterrupts.length > 0) {
-      return allInterrupts as Interrupt<InterruptType>[];
+    const fromTasks = userFacingInterruptsFromThreadTasks<InterruptType>(
+      allInterrupts as Interrupt<InterruptType>[],
+    );
+    if (fromTasks !== null) {
+      return fromTasks;
     }
 
     const next = branchContext().threadHead?.next ?? [];
@@ -864,37 +866,15 @@ export function useStreamLGP<
       handledToolsLGP.clear();
     }
 
-    const { tools, onTool } = options;
-    if (!tools?.length) return;
-
-    const interrupts = vals?.__interrupt__;
-    if (!Array.isArray(interrupts) || interrupts.length === 0) return;
-
-    for (const interrupt of interrupts) {
-      if (!isHeadlessToolInterrupt(interrupt.value)) continue;
-
-      const interruptId = interrupt.id ?? interrupt.value.toolCall.id ?? "";
-      if (handledToolsLGP.has(interruptId)) continue;
-      handledToolsLGP.add(interruptId);
-
-      void Promise.resolve().then(() =>
-        handleHeadlessToolInterrupt(interrupt.value, tools, onTool).then(
-          (result) => {
-            void submit(null as unknown as StateType, {
-              // interrupt ensures the resume bypasses the LGP queue and calls
-              // submitDirect directly, even if isLoading is still true when
-              // the browser tool interrupt fires.
-              multitaskStrategy: "interrupt",
-              command: {
-                resume: result.toolCallId
-                  ? { [result.toolCallId]: result.value }
-                  : result.value,
-              },
-            });
-          },
-        ),
-      );
-    }
+    flushPendingHeadlessToolInterrupts(vals, options.tools, handledToolsLGP, {
+      onTool: options.onTool,
+      defer: (run) => void Promise.resolve().then(run),
+      resumeSubmit: (command) =>
+        void submit(null as unknown as StateType, {
+          multitaskStrategy: "interrupt",
+          command,
+        }),
+    });
   });
 
   return {

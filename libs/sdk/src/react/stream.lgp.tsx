@@ -38,13 +38,14 @@ import type {
   ToolsStreamEvent,
 } from "../types.stream.js";
 import { MessageTupleManager } from "../ui/messages.js";
+import {
+  userFacingInterruptsFromThreadTasks,
+  userFacingInterruptsFromValuesArray,
+} from "../ui/interrupts.js";
 import { useControllableThreadId } from "./thread.js";
 import type { StreamEvent } from "../types.js";
 import type { BagTemplate } from "../types.template.js";
-import {
-  isHeadlessToolInterrupt,
-  handleHeadlessToolInterrupt,
-} from "../browser-tools.js";
+import { flushPendingHeadlessToolInterrupts } from "../browser-tools.js";
 
 function getFetchHistoryKey(
   client: Client,
@@ -780,39 +781,18 @@ export function useStreamLGP<
 
   // Handle headless tool interrupts
   useEffect(() => {
-    const tools = toolsRef.current;
-    if (!tools?.length) return;
-
-    // Check for browser tool interrupt in values
-    const interrupts = values?.__interrupt__;
-    if (!Array.isArray(interrupts) || interrupts.length === 0) return;
-
-    // Find browser tool interrupts that haven't been handled
-    for (const interrupt of interrupts) {
-      if (!isHeadlessToolInterrupt(interrupt.value)) continue;
-
-      const interruptId = interrupt.id ?? interrupt.value.toolCall.id ?? "";
-      if (handledToolsRef.current.has(interruptId)) continue;
-
-      // Mark as handled before async operation
-      handledToolsRef.current.add(interruptId);
-
-      // Handle the browser tool interrupt
-      void handleHeadlessToolInterrupt(
-        interrupt.value,
-        tools,
-        onToolRef.current
-      ).then((result) => {
-        // Resume with the tool result
-        void submit(null, {
-          command: {
-            resume: result.toolCallId
-              ? { [result.toolCallId]: result.value }
-              : result.value,
-          },
-        });
-      });
-    }
+    flushPendingHeadlessToolInterrupts(
+      values,
+      toolsRef.current,
+      handledToolsRef.current,
+      {
+        onTool: onToolRef.current,
+        resumeSubmit: (command) =>
+          void submit(null, {
+            command,
+          }),
+      }
+    );
   }, [values, submit]);
 
   return {
@@ -864,9 +844,9 @@ export function useStreamLGP<
         "__interrupt__" in values &&
         Array.isArray(values.__interrupt__)
       ) {
-        const valueInterrupts = values.__interrupt__;
-        if (valueInterrupts.length === 0) return [{ when: "breakpoint" }];
-        return valueInterrupts;
+        return userFacingInterruptsFromValuesArray<InterruptType>(
+          values.__interrupt__ as Interrupt<InterruptType>[]
+        );
       }
 
       // If we're deferring to old interrupt detection logic, don't show the interrupt if the stream is loading
@@ -876,8 +856,11 @@ export function useStreamLGP<
       const allTasks = branchContext.threadHead?.tasks ?? [];
       const allInterrupts = allTasks.flatMap((t) => t.interrupts ?? []);
 
-      if (allInterrupts.length > 0) {
-        return allInterrupts as Interrupt<InterruptType>[];
+      const fromTasks = userFacingInterruptsFromThreadTasks<InterruptType>(
+        allInterrupts as Interrupt<InterruptType>[]
+      );
+      if (fromTasks !== null) {
+        return fromTasks;
       }
 
       // check if there's a next task present (breakpoint-style interrupt)

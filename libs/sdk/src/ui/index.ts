@@ -12,7 +12,11 @@ export {
 export { StreamManager, type EventStreamEvent } from "./manager.js";
 export { getBranchContext, getMessagesMetadataMap } from "./branching.js";
 export { StreamError } from "./errors.js";
-export { extractInterrupts } from "./interrupts.js";
+export {
+  extractInterrupts,
+  userFacingInterruptsFromValuesArray,
+  userFacingInterruptsFromThreadTasks,
+} from "./interrupts.js";
 export { FetchStreamTransport } from "./transport.js";
 export { unique, findLast, filterStream } from "./utils.js";
 export {
@@ -27,3 +31,8 @@ export {
   type QueueEntry,
   type QueueInterface,
 } from "./queue.js";
+export {
+  flushPendingHeadlessToolInterrupts,
+  headlessToolResumeCommand,
+  type FlushPendingHeadlessToolInterruptsOptions,
+} from "../browser-tools.js";

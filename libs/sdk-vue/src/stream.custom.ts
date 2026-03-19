@@ -3,6 +3,7 @@ import {
   StreamManager,
   MessageTupleManager,
   extractInterrupts,
+  userFacingInterruptsFromValuesArray,
   toMessageClass,
   ensureMessageInstances,
   type EventStreamEvent,
@@ -20,8 +21,6 @@ import type {
   Message,
   Interrupt,
   ThreadState,
-  isHeadlessToolInterrupt,
-  handleHeadlessToolInterrupt,
 } from "@langchain/langgraph-sdk";
 
 function createCustomTransportThreadState<
@@ -242,33 +241,19 @@ export function useStreamCustom<
   );
 
   watch(streamValues, (vals) => {
-    const { tools, onTool } = options;
-    if (!tools?.length) return;
-
-    const interrupts = vals?.__interrupt__;
-    if (!Array.isArray(interrupts) || interrupts.length === 0) return;
-
-    for (const interrupt of interrupts) {
-      if (!isHeadlessToolInterrupt(interrupt.value)) continue;
-
-      const interruptId = interrupt.id ?? interrupt.value.toolCall.id ?? "";
-      if (handledBrowserTools.has(interruptId)) continue;
-      handledBrowserTools.add(interruptId);
-
-      void Promise.resolve().then(() =>
-        handleHeadlessToolInterrupt(interrupt.value, tools, onTool).then(
-          (result) => {
-            void submit(null, {
-              command: {
-                resume: result.toolCallId
-                  ? { [result.toolCallId]: result.value }
-                  : result.value,
-              },
-            });
-          },
-        ),
-      );
-    }
+    flushPendingHeadlessToolInterrupts(
+      vals,
+      options.tools,
+      handledBrowserTools,
+      {
+        onTool: options.onTool,
+        defer: (run) => void Promise.resolve().then(run),
+        resumeSubmit: (command) =>
+          void submit(null, {
+            command,
+          }),
+      },
+    );
   });
 
   function setBranch(value: string) {
@@ -323,9 +308,9 @@ export function useStreamCustom<
         "__interrupt__" in streamValues.value &&
         Array.isArray(streamValues.value.__interrupt__)
       ) {
-        const valueInterrupts = streamValues.value.__interrupt__;
-        if (valueInterrupts.length === 0) return [{ when: "breakpoint" }];
-        return valueInterrupts;
+        return userFacingInterruptsFromValuesArray<InterruptType>(
+          streamValues.value.__interrupt__ as Interrupt<InterruptType>[],
+        );
       }
 
       return [];

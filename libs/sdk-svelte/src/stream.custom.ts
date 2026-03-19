@@ -4,6 +4,7 @@ import {
   StreamManager,
   MessageTupleManager,
   extractInterrupts,
+  userFacingInterruptsFromValuesArray,
   toMessageClass,
   ensureMessageInstances,
   type EventStreamEvent,
@@ -17,13 +18,12 @@ import {
   type MessageMetadata,
 } from "@langchain/langgraph-sdk/ui";
 import { getToolCallsWithResults } from "@langchain/langgraph-sdk/utils";
-import type {
-  BagTemplate,
-  Message,
-  Interrupt,
-  ThreadState,
-  isHeadlessToolInterrupt,
-  handleHeadlessToolInterrupt,
+import {
+  type BagTemplate,
+  type Message,
+  type Interrupt,
+  type ThreadState,
+  flushPendingHeadlessToolInterrupts,
 } from "@langchain/langgraph-sdk";
 
 function createCustomTransportThreadState<
@@ -210,42 +210,24 @@ export function useStreamCustom<
   let lastThreadId = options.threadId;
 
   const unsubscribeBrowserTools = streamValues.subscribe((vals) => {
-    // Reset dedup set when thread changes
     if (options.threadId !== lastThreadId) {
       lastThreadId = options.threadId;
       handledBrowserTools.clear();
     }
 
-    const { tools, onTool } = options;
-    if (!tools?.length) return;
-
-    const interrupts = vals?.__interrupt__;
-    if (!Array.isArray(interrupts) || interrupts.length === 0) return;
-
-    for (const interrupt of interrupts) {
-      if (!isHeadlessToolInterrupt(interrupt.value)) continue;
-
-      const interruptId = interrupt.id ?? interrupt.value.toolCall.id ?? "";
-      if (handledBrowserTools.has(interruptId)) continue;
-      handledBrowserTools.add(interruptId);
-
-      // Defer to the next microtask so the subscribe notification fully
-      // settles before we kick off a new stream.start() via submit().
-      // Svelte's subscribe fires synchronously unlike React's useEffect.
-      void Promise.resolve().then(() =>
-        handleHeadlessToolInterrupt(interrupt.value, tools, onTool).then(
-          (result) => {
-            void submit(null, {
-              command: {
-                resume: result.toolCallId
-                  ? { [result.toolCallId]: result.value }
-                  : result.value,
-              },
-            });
-          },
-        ),
-      );
-    }
+    flushPendingHeadlessToolInterrupts(
+      vals,
+      options.tools,
+      handledBrowserTools,
+      {
+        onTool: options.onTool,
+        defer: (run) => void Promise.resolve().then(run),
+        resumeSubmit: (command) =>
+          void submit(null, {
+            command,
+          }),
+      },
+    );
   });
 
   onDestroy(unsubscribeBrowserTools);
@@ -278,9 +260,9 @@ export function useStreamCustom<
         "__interrupt__" in $streamValues &&
         Array.isArray($streamValues.__interrupt__)
       ) {
-        const valueInterrupts = $streamValues.__interrupt__;
-        if (valueInterrupts.length === 0) return [{ when: "breakpoint" }];
-        return valueInterrupts;
+        return userFacingInterruptsFromValuesArray<InterruptType>(
+          $streamValues.__interrupt__ as Interrupt<InterruptType>[],
+        );
       }
 
       return [];
