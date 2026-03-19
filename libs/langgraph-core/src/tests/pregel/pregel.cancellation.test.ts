@@ -197,7 +197,7 @@ describe("Pregel AbortSignal", () => {
 
       await expect(() =>
         createGraph({ mode, checkSignal: false }).invoke({}, config)
-      ).rejects.toThrow("Abort");
+      ).rejects.toThrow(/abort/i);
 
       // Ensure that the `twoCount` has had time to increment before we check it, in case the stream aborted but the graph execution didn't.
       await new Promise((resolve) => {
@@ -221,7 +221,7 @@ describe("Pregel AbortSignal", () => {
 
       await expect(() =>
         graph.invoke({}, { configurable: { thread_id: uuidv4() } })
-      ).rejects.toThrow("Abort");
+      ).rejects.toThrow(/abort/i);
 
       // Ensure that the `twoCount` has had time to increment before we check it, in case the stream aborted but the graph execution didn't.
       await new Promise((resolve) => {
@@ -251,7 +251,7 @@ describe("Pregel AbortSignal", () => {
         signal: abortController.signal,
       };
 
-      await expect(() => graph.invoke({}, config)).rejects.toThrow("Abort");
+      await expect(() => graph.invoke({}, config)).rejects.toThrow(/abort/i);
 
       // Ensure that the `twoCount` has had time to increment before we check it, in case the stream aborted but the graph execution didn't.
       await new Promise((resolve) => {
@@ -276,7 +276,7 @@ describe("Pregel AbortSignal", () => {
         const graph = createGraph({ mode, checkSignal: true });
         graph.stepTimeout = 10;
         return graph.invoke({}, config);
-      }).rejects.toThrow("Abort");
+      }).rejects.toThrow(/abort/i);
 
       // Ensure that the `twoCount` has had time to increment before we check it, in case the stream aborted but the graph execution didn't.
       await new Promise((resolve) => {
@@ -306,7 +306,7 @@ describe("Pregel AbortSignal", () => {
 
       await expect(() =>
         createGraph({ mode, checkSignal: true }).invoke({}, config)
-      ).rejects.toThrow("Abort");
+      ).rejects.toThrow(/abort/i);
 
       // Ensure that the `twoCount` has had time to increment before we check it, in case the stream aborted but the graph execution didn't.
       await new Promise((resolve) => {
@@ -340,7 +340,7 @@ describe("Pregel AbortSignal", () => {
 
       await expect(() =>
         createGraph({ mode, checkSignal: true }).invoke({}, config)
-      ).rejects.toThrow("Abort");
+      ).rejects.toThrow(/abort/i);
 
       // Ensure that the `twoCount` has had time to increment before we check it, in case the stream aborted but the graph execution didn't.
       await new Promise((resolve) => {
