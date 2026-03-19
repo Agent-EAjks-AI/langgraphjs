@@ -16,11 +16,12 @@ import {
   type MessageMetadata,
 } from "@langchain/langgraph-sdk/ui";
 import { getToolCallsWithResults } from "@langchain/langgraph-sdk/utils";
-import type {
-  BagTemplate,
-  Message,
-  Interrupt,
-  ThreadState,
+import {
+  flushPendingHeadlessToolInterrupts,
+  type BagTemplate,
+  type Message,
+  type Interrupt,
+  type ThreadState,
 } from "@langchain/langgraph-sdk";
 
 function createCustomTransportThreadState<
@@ -247,8 +248,8 @@ export function useStreamCustom<
       handledBrowserTools,
       {
         onTool: options.onTool,
-        defer: (run) => void Promise.resolve().then(run),
-        resumeSubmit: (command) =>
+        defer: (run: () => void) => void Promise.resolve().then(run),
+        resumeSubmit: (command: { resume: unknown }) =>
           void submit(null, {
             command,
           }),

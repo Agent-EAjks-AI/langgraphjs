@@ -47,6 +47,7 @@ import {
   type StreamMode,
   type StreamEvent,
   type Message,
+  type Interrupt,
   type ThreadState,
   type ToolCallWithResult as _ToolCallWithResult,
   type DefaultToolCall,
