@@ -1,5 +1,11 @@
 # @langchain/vue
 
+## 0.2.1
+
+### Patch Changes
+
+- [#2230](https://github.com/langchain-ai/langgraphjs/pull/2230) [`11acfc1`](https://github.com/langchain-ai/langgraphjs/commit/11acfc137b65c7e28c3fab61444c00db3e4be229) Thanks [@christian-bromann](https://github.com/christian-bromann)! - fix(vue): integrate LangChainPlugin with useStream and fix subagent reactivity
+
 ## 0.2.0
 
 ### Minor Changes

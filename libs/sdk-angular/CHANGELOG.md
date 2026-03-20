@@ -1,5 +1,11 @@
 # @langchain/angular
 
+## 0.3.0
+
+### Minor Changes
+
+- [#2226](https://github.com/langchain-ai/langgraphjs/pull/2226) [`13d117e`](https://github.com/langchain-ai/langgraphjs/commit/13d117ec90f6cf2f5d11584d298d32bb3ff160e1) Thanks [@christian-bromann](https://github.com/christian-bromann)! - feat(angular): use `injectStream`/`injectStreamCustom`
+
 ## 0.2.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @langchain/svelte
 
+## 0.2.1
+
+### Patch Changes
+
+- [#2231](https://github.com/langchain-ai/langgraphjs/pull/2231) [`bb9cc3a`](https://github.com/langchain-ai/langgraphjs/commit/bb9cc3a57dac69feb30244e439026c5059ac8ba0) Thanks [@christian-bromann](https://github.com/christian-bromann)! - feat(svelte): consolidate dual context systems into single shared key
+
 ## 0.2.0
 
 ### Minor Changes
