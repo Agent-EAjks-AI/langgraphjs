@@ -7,7 +7,11 @@ import type {
   DefaultToolCall,
 } from "@langchain/langgraph-sdk";
 
-export { useStream, type ClassSubagentStreamInterface } from "./stream.js";
+export {
+  useStream,
+  useThreadStream,
+  type ClassSubagentStreamInterface,
+} from "./stream.js";
 export {
   useSuspenseStream,
   createSuspenseCache,

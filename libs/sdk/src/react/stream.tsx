@@ -49,3 +49,24 @@ export function useStream(options: any): any {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   return useStreamLGP(options);
 }
+
+export function useThreadStream<
+  T = Record<string, unknown>,
+  Bag extends BagTemplate = BagTemplate
+>(
+  options: ResolveStreamOptions<T, InferBag<T, Bag>>
+): ResolveStreamInterface<T, InferBag<T, Bag>>;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function useThreadStream(options: any): any {
+  // Store this in useState to make sure we're not changing the implementation in re-renders
+  const [isCustom] = useState(isCustomOptions(options));
+
+  if (isCustom) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    return useStreamCustom(options);
+  }
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  return useStreamLGP({ ...options, subscribeTo: "thread" });
+}

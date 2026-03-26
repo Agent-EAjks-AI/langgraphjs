@@ -1,4 +1,4 @@
-export { useStream } from "./stream.js";
+export { useStream, useThreadStream } from "./stream.js";
 export { FetchStreamTransport } from "./stream.custom.js";
 // Legacy exports - kept for backward compatibility
 export type {

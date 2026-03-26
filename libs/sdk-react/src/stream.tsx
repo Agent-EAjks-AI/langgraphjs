@@ -226,3 +226,23 @@ export function useStream(options: any): any {
   );
   return useSelectedStream(options);
 }
+
+export function useThreadStream<
+  T = Record<string, unknown>,
+  Bag extends BagTemplate = BagTemplate,
+>(
+  options: ResolveStreamOptions<T, InferBag<T, Bag>>,
+): WithClassMessages<ResolveStreamInterface<T, InferBag<T, Bag>>>;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function useThreadStream(options: any): any {
+  const [isCustom] = useState(isCustomOptions(options));
+
+  if (isCustom) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    return useStreamCustom(options);
+  }
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  return useStreamLGP({ ...options, subscribeTo: "thread" });
+}

@@ -222,7 +222,11 @@ function useCallbackStreamMode<
 export function useStreamLGP<
   StateType extends Record<string, unknown> = Record<string, unknown>,
   Bag extends BagTemplate = BagTemplate,
->(options: AnyStreamOptions<StateType, Bag>): UseStream<StateType, Bag> {
+>(
+  options: AnyStreamOptions<StateType, Bag> & {
+    subscribeTo?: "run" | "thread";
+  },
+): UseStream<StateType, Bag> {
   type UpdateType = GetUpdateType<Bag, StateType>;
   type CustomType = GetCustomEventType<Bag>;
   type InterruptType = GetInterruptType<Bag>;
@@ -578,11 +582,52 @@ export function useStreamLGP<
         // Avoid specifying a checkpoint if user explicitly set it to null
         if (submitOptions?.checkpoint === null) checkpoint = undefined;
 
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        if (checkpoint != null) delete checkpoint.thread_id;
+        if (checkpoint != null) {
+          delete (checkpoint as { thread_id?: string }).thread_id;
+        }
         const streamResumable =
           submitOptions?.streamResumable ?? !!runMetadataStorage;
+
+        if (options.subscribeTo === "thread") {
+          const run = await client.runs.create(usableThreadId, options.assistantId, {
+            input: values as Record<string, unknown>,
+            config: submitOptions?.config,
+            context: submitOptions?.context,
+            command: submitOptions?.command,
+
+            interruptBefore: submitOptions?.interruptBefore,
+            interruptAfter: submitOptions?.interruptAfter,
+            metadata: submitOptions?.metadata,
+            multitaskStrategy: submitOptions?.multitaskStrategy,
+            onCompletion: submitOptions?.onCompletion,
+
+            signal,
+
+            checkpoint,
+            streamMode,
+            streamSubgraphs: submitOptions?.streamSubgraphs,
+            streamResumable,
+            durability: submitOptions?.durability,
+          });
+
+          callbackMeta = {
+            run_id: run.run_id,
+            thread_id: usableThreadId,
+          };
+
+          if (runMetadataStorage) {
+            rejoinKey = `lg:stream:${usableThreadId}`;
+            runMetadataStorage.setItem(rejoinKey, callbackMeta.run_id);
+          }
+
+          options.onCreated?.(callbackMeta);
+
+          return client.threads.joinStream(usableThreadId, {
+            signal,
+          }) as AsyncGenerator<
+            EventStreamEvent<StateType, UpdateType, CustomType>
+          >;
+        }
 
         return client.runs.stream(usableThreadId, options.assistantId, {
           input: values as Record<string, unknown>,
@@ -762,13 +807,21 @@ export function useStreamLGP<
     await stream.start(
       async (signal: AbortSignal) => {
         threadIdStreamingRef.current = threadId;
-        const stream = client.runs.joinStream(threadId, runId, {
-          signal,
-          lastEventId,
-          streamMode: joinOptions?.streamMode,
-        }) as AsyncGenerator<
-          EventStreamEvent<StateType, UpdateType, CustomType>
-        >;
+        const stream =
+          options.subscribeTo === "thread"
+            ? (client.threads.joinStream(threadId, {
+                signal,
+                lastEventId,
+              }) as AsyncGenerator<
+                EventStreamEvent<StateType, UpdateType, CustomType>
+              >)
+            : (client.runs.joinStream(threadId, runId, {
+                signal,
+                lastEventId,
+                streamMode: joinOptions?.streamMode,
+              }) as AsyncGenerator<
+                EventStreamEvent<StateType, UpdateType, CustomType>
+              >);
 
         return joinOptions?.filter != null
           ? filterStream(stream, joinOptions.filter)
