@@ -571,26 +571,30 @@ export function useStreamLGP<
           submitOptions?.streamResumable ?? !!runMetadataStorage;
 
         if (options.subscribeTo === "thread") {
-          const run = await client.runs.create(usableThreadId, options.assistantId, {
-            input: values as Record<string, unknown>,
-            config: submitOptions?.config,
-            context: submitOptions?.context,
-            command: submitOptions?.command,
+          const run = await client.runs.create(
+            usableThreadId,
+            options.assistantId,
+            {
+              input: values as Record<string, unknown>,
+              config: submitOptions?.config,
+              context: submitOptions?.context,
+              command: submitOptions?.command,
 
-            interruptBefore: submitOptions?.interruptBefore,
-            interruptAfter: submitOptions?.interruptAfter,
-            metadata: submitOptions?.metadata,
-            multitaskStrategy: submitOptions?.multitaskStrategy,
-            onCompletion: submitOptions?.onCompletion,
+              interruptBefore: submitOptions?.interruptBefore,
+              interruptAfter: submitOptions?.interruptAfter,
+              metadata: submitOptions?.metadata,
+              multitaskStrategy: submitOptions?.multitaskStrategy,
+              onCompletion: submitOptions?.onCompletion,
 
-            signal,
+              signal,
 
-            checkpoint,
-            streamMode,
-            streamSubgraphs: submitOptions?.streamSubgraphs,
-            streamResumable,
-            durability: submitOptions?.durability,
-          });
+              checkpoint,
+              streamMode,
+              streamSubgraphs: submitOptions?.streamSubgraphs,
+              streamResumable,
+              durability: submitOptions?.durability,
+            }
+          );
 
           callbackMeta = {
             run_id: run.run_id,
