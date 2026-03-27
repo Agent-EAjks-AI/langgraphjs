@@ -234,6 +234,11 @@ export function useThreadStream<
   options: ResolveStreamOptions<T, InferBag<T, Bag>>,
 ): WithClassMessages<ResolveStreamInterface<T, InferBag<T, Bag>>>;
 
+/**
+ * Like {@link useStream}, but subscribes to thread-level events instead of run-level events.
+ *
+ * @experimental This API is experimental and may change in future releases.
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function useThreadStream(options: any): any {
   const [isCustom] = useState(isCustomOptions(options));
