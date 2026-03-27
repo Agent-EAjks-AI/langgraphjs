@@ -77,6 +77,21 @@ function fetchHistory<StateType extends Record<string, unknown>>(
   return client.threads.getHistory<StateType>(threadId, { limit });
 }
 
+function isValidRedisStreamId(value: string): boolean {
+  return /^(\d+)-(\d+)$/.test(value);
+}
+
+function getStreamStorageKey(
+  subscribeTo: 'run' | 'thread',
+  threadId: string,
+): `lg:stream:${string}` {
+  return `lg:stream:${subscribeTo}:${threadId}`;
+}
+
+function getLegacyStreamStorageKey(threadId: string): `lg:stream:${string}` {
+  return `lg:stream:${threadId}`;
+}
+
 function useThreadHistory<StateType extends Record<string, unknown>>(
   client: Client,
   threadId: string | undefined | null,
@@ -234,6 +249,7 @@ export function useStreamLGP<
   type ToolCallType = GetToolCallsType<StateType>;
 
   const reconnectOnMountRef = useRef(options.reconnectOnMount);
+  const subscribeTo = options.subscribeTo ?? 'run';
   const runMetadataStorage = useMemo(() => {
     if (typeof window === "undefined") return null;
     const storage = reconnectOnMountRef.current;
@@ -477,9 +493,13 @@ export function useStreamLGP<
     stream.stop(historyValues, {
       onStop: (args) => {
         if (runMetadataStorage && threadId) {
-          const runId = runMetadataStorage.getItem(`lg:stream:${threadId}`);
+          const key = getStreamStorageKey(subscribeTo, threadId);
+          const legacyKey = getLegacyStreamStorageKey(threadId);
+          const runId =
+            runMetadataStorage.getItem(key) ?? runMetadataStorage.getItem(legacyKey);
           if (runId) void client.runs.cancel(threadId, runId);
-          runMetadataStorage.removeItem(`lg:stream:${threadId}`);
+          runMetadataStorage.removeItem(key);
+          runMetadataStorage.removeItem(legacyKey);
         }
 
         options.onStop?.(args);
@@ -620,7 +640,7 @@ export function useStreamLGP<
           };
 
           if (runMetadataStorage) {
-            rejoinKey = `lg:stream:${usableThreadId}`;
+            rejoinKey = getStreamStorageKey('thread', callbackMeta.thread_id);
             runMetadataStorage.setItem(rejoinKey, callbackMeta.run_id);
           }
 
@@ -662,7 +682,7 @@ export function useStreamLGP<
             };
 
             if (runMetadataStorage) {
-              rejoinKey = `lg:stream:${usableThreadId}`;
+              rejoinKey = getStreamStorageKey('run', callbackMeta.thread_id);
               runMetadataStorage.setItem(rejoinKey, callbackMeta.run_id);
             }
 
@@ -676,7 +696,10 @@ export function useStreamLGP<
         getMessages,
         setMessages,
 
-        initialValues: historyValues,
+        initialValues:
+          options.subscribeTo === 'thread'
+            ? ((stream.values ?? historyValues) as StateType)
+            : historyValues,
         callbacks: {
           ...options,
           onToolEvent: (data, opts) => {
@@ -798,10 +821,9 @@ export function useStreamLGP<
     },
   ) => {
     setToolProgressMap(new Map());
-
-    // eslint-disable-next-line no-param-reassign
-    lastEventId ??= "-1";
     if (!threadId) return;
+
+    const runLastEventId = lastEventId ?? '-1';
 
     const callbackMeta: RunCallbackMeta = {
       thread_id: threadId,
@@ -813,15 +835,24 @@ export function useStreamLGP<
         threadIdStreamingRef.current = threadId;
         const stream =
           options.subscribeTo === "thread"
-            ? (client.threads.joinStream(threadId, {
-                signal,
-                lastEventId,
-              }) as AsyncGenerator<
-                EventStreamEvent<StateType, UpdateType, CustomType>
-              >)
+            ? (() => {
+                const threadJoinOptions: {
+                  signal: AbortSignal;
+                  lastEventId?: string;
+                } = { signal };
+                if (lastEventId && isValidRedisStreamId(lastEventId)) {
+                  threadJoinOptions.lastEventId = lastEventId;
+                }
+                return client.threads.joinStream(
+                  threadId,
+                  threadJoinOptions,
+                ) as AsyncGenerator<
+                  EventStreamEvent<StateType, UpdateType, CustomType>
+                >;
+              })()
             : (client.runs.joinStream(threadId, runId, {
                 signal,
-                lastEventId,
+                lastEventId: runLastEventId,
                 streamMode: joinOptions?.streamMode,
               }) as AsyncGenerator<
                 EventStreamEvent<StateType, UpdateType, CustomType>
@@ -835,7 +866,10 @@ export function useStreamLGP<
         getMessages,
         setMessages,
 
-        initialValues: historyValues,
+        initialValues:
+          options.subscribeTo === 'thread'
+            ? ((stream.values ?? historyValues) as StateType)
+            : historyValues,
         callbacks: {
           ...options,
           onToolEvent: (data, opts) => {
@@ -844,7 +878,8 @@ export function useStreamLGP<
           },
         },
         async onSuccess() {
-          runMetadataStorage?.removeItem(`lg:stream:${threadId}`);
+          runMetadataStorage?.removeItem(getStreamStorageKey(subscribeTo, threadId));
+          runMetadataStorage?.removeItem(getLegacyStreamStorageKey(threadId));
           const newHistory = await history.mutate(threadId);
           const lastHead = newHistory?.at(0);
           if (lastHead) options.onFinish?.(lastHead, callbackMeta);
@@ -886,10 +921,25 @@ export function useStreamLGP<
   const reconnectKey = useMemo(() => {
     if (!runMetadataStorage || stream.isLoading) return undefined;
     if (typeof window === "undefined") return undefined;
-    const runId = runMetadataStorage?.getItem(`lg:stream:${threadId}`);
+    if (!threadId) return undefined;
+
+    const key = getStreamStorageKey(subscribeTo, threadId);
+    const legacyKey = getLegacyStreamStorageKey(threadId);
+
+    const legacyRunId = runMetadataStorage.getItem(legacyKey);
+    if (legacyRunId != null) {
+      if (subscribeTo === 'thread') {
+        runMetadataStorage.removeItem(legacyKey);
+      } else {
+        runMetadataStorage.setItem(key, legacyRunId);
+        runMetadataStorage.removeItem(legacyKey);
+      }
+    }
+
+    const runId = runMetadataStorage.getItem(key);
     if (!runId) return undefined;
     return { runId, threadId };
-  }, [runMetadataStorage, stream.isLoading, threadId]);
+  }, [runMetadataStorage, stream.isLoading, threadId, subscribeTo]);
 
   const shouldReconnect = !!runMetadataStorage;
   const reconnectRef = useRef({ threadId, shouldReconnect });
